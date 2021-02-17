@@ -255,7 +255,7 @@ def download_data_REST(query_params, hostname, token, destination_folder='.',
         absolute_path = os.path.abspath(destination_folder)
         drive, path = os.path.splitdrive(absolute_path)
         clean_path = clean_filename(path)
-        folder = os.path.join(drive, clean_path)
+        folder = os.path.join(drive, clean_path, 'REST')
         if not os.path.exists(folder):
             os.makedirs(folder)
 
