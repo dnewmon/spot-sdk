@@ -252,9 +252,13 @@ def download_data_REST(query_params, hostname, token, destination_folder='.',
     import requests
     try:
         url = 'https://{}/v1/data-buffer/daq-data/'.format(hostname)
-        folder = clean_filename(os.path.join(destination_folder, 'REST'))
+        absolute_path = os.path.abspath(destination_folder)
+        drive, path = os.path.splitdrive(absolute_path)
+        clean_path = clean_filename(path)
+        folder = os.path.join(drive, clean_path, 'REST')
         if not os.path.exists(folder):
-            os.mkdir(folder)
+            os.makedirs(folder)
+
         headers = {"Authorization": "Bearer {}".format(token)}
         get_params = additional_params or {}
         if query_params.HasField('time_range'):
@@ -283,7 +287,7 @@ def download_data_REST(query_params, hostname, token, destination_folder='.',
                     return False
                 else:
                     start_ind += 1
-                    download_file = os.path.join(folder, content[start_ind:-1])
+                    download_file = os.path.join(folder, clean_filename(content[start_ind:-1]))
 
             with open(download_file, 'wb') as fid:
                 for chunk in resp.iter_content(chunk_size=chunk_size):
